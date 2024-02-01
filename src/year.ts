@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { RenderInfo, YearInfo, Dataset } from "./data";
 
-function Calendar(dataset: Dataset, yearInfo: YearInfo, renderInfo: RenderInfo, canvas: HTMLElement) {
+function Calendar(yearInfo: YearInfo, renderInfo: RenderInfo, canvas: HTMLElement) {
   const width = 945; // width of the chart
   const cellSize = 17; // height of a day
   const yCalendarOffset = 30; // height of the header
@@ -19,7 +19,9 @@ function Calendar(dataset: Dataset, yearInfo: YearInfo, renderInfo: RenderInfo, 
 
   const data = d3.range(365).map(function (i) {
     const date = window.moment.utc(`${yearInfo.selectedYear}-01-01`, "YYYY-MM-DD").add(i, 'days');
-    const value = dataset.getValue(date);
+    const value = renderInfo.datasets.getDatasets().reduce((partialSum, dataset) =>
+      partialSum + dataset.getValue(date)
+    , 0)
 
     return {
       date: date.toDate(),
@@ -64,7 +66,7 @@ function Calendar(dataset: Dataset, yearInfo: YearInfo, renderInfo: RenderInfo, 
     .on("click", () => {
       yearInfo.selectedYear = yearInfo.selectedYear - 1;
 
-      refresh(dataset, yearInfo, renderInfo, canvas);
+      refresh(yearInfo, renderInfo, canvas);
     });
 
   year.append("text")
@@ -86,7 +88,7 @@ function Calendar(dataset: Dataset, yearInfo: YearInfo, renderInfo: RenderInfo, 
     .on("click", () => {
       yearInfo.selectedYear = yearInfo.selectedYear + 1;
 
-      refresh(dataset, yearInfo, renderInfo, canvas);
+      refresh(yearInfo, renderInfo, canvas);
     });
 
   year.append("text")
@@ -94,7 +96,7 @@ function Calendar(dataset: Dataset, yearInfo: YearInfo, renderInfo: RenderInfo, 
     .attr("font-size", 20)
     .attr("font-weight", "bold")
     .attr("text-anchor", "middle")
-    .text(renderInfo.datasetName.join(', '));
+    .text(yearInfo.title);
 
   year.append("g")
     .attr("text-anchor", "end")
@@ -138,10 +140,10 @@ ${formatValue(d.value)}`);
   return svg;
 }
 
-function refresh(dataset: Dataset, yearInfo: YearInfo, renderInfo: RenderInfo, canvas: HTMLElement) {
+function refresh(yearInfo: YearInfo, renderInfo: RenderInfo, canvas: HTMLElement) {
   d3.select(canvas).select("svg").remove();
 
-  d3.select(canvas).append(() => Calendar(dataset, yearInfo, renderInfo, canvas).node());
+  d3.select(canvas).append(() => Calendar(yearInfo, renderInfo, canvas).node());
 }
 
 export function renderYear(
@@ -151,5 +153,5 @@ export function renderYear(
 ) {
   if (!renderInfo || !yearInfo) return;
 
-  refresh(renderInfo.datasets.getDatasetById(0), yearInfo, renderInfo, canvas);
+  refresh(yearInfo, renderInfo, canvas);
 }

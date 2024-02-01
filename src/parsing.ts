@@ -2264,6 +2264,10 @@ export function getRenderInfoFromYaml(
             }
         }
 
+        if (yamlYear?.title) {
+            year.title = yamlYear?.title;
+        }
+
         if (yamlYear?.colors) {
             year.colors = yamlYear?.colors;
         }

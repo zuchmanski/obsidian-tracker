@@ -508,6 +508,10 @@ export class Datasets implements IterableIterator<Dataset> {
         return null;
     }
 
+    public getDatasets() {
+        return this.datasets;
+    }
+
     public getXDatasetIds() {
         let ids: Array<number> = [];
         for (let dataset of this.datasets) {
@@ -916,14 +920,16 @@ export class MonthInfo implements IGraph {
 }
 
 export class YearInfo implements IGraph {
+    title: string;
     colors: Array<string>;
     range: [number, number];
     selectedYear: number;
 
     constructor() {
-        this.colors = ["#fee08b", "#66bd63"];
+        this.colors = ["#EBEDF0", '#2eb24d'];
         this.range = [0, 1];
         this.selectedYear = window.moment().year();
+        this.title = '';
     }
 
     public GetGraphType() {
