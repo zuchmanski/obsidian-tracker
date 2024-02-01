@@ -17,11 +17,13 @@ import {
     SummaryInfo,
     BulletInfo,
     MonthInfo,
+    YearInfo,
     HeatmapInfo,
 } from "./data";
 import * as pie from "./pie";
 import * as summary from "./summary";
 import * as month from "./month";
+import * as year from "./year";
 import * as heatmap from "./heatmap";
 import * as bullet from "./bullet";
 import * as helper from "./helper";
@@ -272,6 +274,12 @@ export function render(canvas: HTMLElement, renderInfo: RenderInfo) {
     }
     for (let monthInfo of renderInfo.month) {
         let ret = month.renderMonth(canvas, renderInfo, monthInfo);
+        if (typeof ret === "string") {
+            return ret;
+        }
+    }
+    for (let yearInfo of renderInfo.year) {
+        let ret = year.renderYear(canvas, renderInfo, yearInfo);
         if (typeof ret === "string") {
             return ret;
         }

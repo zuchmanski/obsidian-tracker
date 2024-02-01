@@ -6,6 +6,7 @@ import {
     Query,
     RenderInfo,
     SummaryInfo,
+    YearInfo,
     Margin,
     GraphType,
     LineInfo,
@@ -1111,6 +1112,7 @@ export function getRenderInfoFromYaml(
     let yamlPieKeys = [];
     let yamlSummaryKeys = [];
     let yamlMonthKeys = [];
+    let yamlYearKeys = [];
     let yamlHeatmapKeys = [];
     let yamlBulletKeys = [];
     for (let key of keysFoundInYAML) {
@@ -1136,6 +1138,10 @@ export function getRenderInfoFromYaml(
         }
         if (/^month[0-9]*$/.test(key)) {
             yamlMonthKeys.push(key);
+            additionalAllowedKeys.push(key);
+        }
+        if (/^year[0-9]*$/.test(key)) {
+            yamlYearKeys.push(key);
             additionalAllowedKeys.push(key);
         }
         if (/^heatmap[0-9]*$/.test(key)) {
@@ -1187,6 +1193,7 @@ export function getRenderInfoFromYaml(
         yamlSummaryKeys.length +
         yamlBulletKeys.length +
         yamlMonthKeys.length +
+        yamlYearKeys.length +
         yamlHeatmapKeys.length;
     if (totalNumOutputs === 0) {
         return "No output parameter provided, please place line, bar, pie, month, bullet, or summary.";
@@ -2241,6 +2248,36 @@ export function getRenderInfoFromYaml(
         renderInfo.month.push(month);
     } // Month related parameters
     // console.log(renderInfo.month);
+
+    // year related parameters
+    for (let yearKey of yamlYearKeys) {
+        let year = new YearInfo();
+        let yamlYear = yaml[yearKey];
+
+        let keysOfYearInfo = getAvailableKeysOfClass(year);
+        let keysFoundInYAML = getAvailableKeysOfClass(yamlYear);
+
+        for (let key of keysFoundInYAML) {
+            if (!keysOfYearInfo.includes(key)) {
+                errorMessage = "'" + key + "' is not an available key";
+                return errorMessage;
+            }
+        }
+
+        if (yamlYear?.colors) {
+            year.colors = yamlYear?.colors;
+        }
+
+        if (yamlYear?.range) {
+            year.range = yamlYear?.range;
+        }
+
+        if (yamlYear?.selectedYear) {
+            year.selectedYear = yamlYear?.selectedYear;
+        }
+
+        renderInfo.year.push(year);
+    } // year related parameters
 
     // Heatmap related parameters
     for (let heatmapKey of yamlHeatmapKeys) {

@@ -23,6 +23,7 @@ export enum GraphType {
     Summary,
     Table,
     Month,
+    Year,
     Heatmap,
     Bullet,
     Unknown,
@@ -590,6 +591,7 @@ export class RenderInfo {
     pie: PieInfo[];
     summary: SummaryInfo[];
     month: MonthInfo[];
+    year: YearInfo[];
     heatmap: HeatmapInfo[];
     bullet: BulletInfo[];
     customDataset: CustomDatasetInfo[];
@@ -633,6 +635,7 @@ export class RenderInfo {
         this.pie = [];
         this.summary = [];
         this.month = [];
+        this.year = [];
         this.heatmap = [];
         this.bullet = [];
         this.customDataset = [];
@@ -909,6 +912,22 @@ export class MonthInfo implements IGraph {
 
     public GetGraphType() {
         return GraphType.Month;
+    }
+}
+
+export class YearInfo implements IGraph {
+    colors: Array<string>;
+    range: [number, number];
+    selectedYear: number;
+
+    constructor() {
+        this.colors = ["#fee08b", "#66bd63"];
+        this.range = [0, 1];
+        this.selectedYear = window.moment().year();
+    }
+
+    public GetGraphType() {
+        return GraphType.Year;
     }
 }
 
