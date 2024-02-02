@@ -45,9 +45,9 @@ function Calendar(yearInfo: YearInfo, renderInfo: RenderInfo, canvas: HTMLElemen
   function pathMonth(t: Date) {
     const d = Math.max(0, Math.min(7, countDay(t.getUTCDay())));
     const w = timeWeek.count(d3.utcYear(t), t);
-    return `${d === 0 ? `M${w * cellSize},0`
-: d === 7 ? `M${(w + 1) * cellSize},0`
-: `M${(w + 1) * cellSize},0V${d * cellSize + yCalendarOffset}H${w * cellSize}`}V${7 * cellSize + yCalendarOffset}`;
+    return `${d === 0 ? `M${w * cellSize},${yCalendarOffset}`
+: d === 7 ? `M${(w + 1) * cellSize},${yCalendarOffset}`
+: `M${(w + 1) * cellSize},${yCalendarOffset}V${d * cellSize + yCalendarOffset}H${w * cellSize}`}V${7 * cellSize + yCalendarOffset}`;
   }
 
   const svg = d3.create("svg")
